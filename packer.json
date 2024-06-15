@@ -1,0 +1,49 @@
+{
+  "variables": {
+    "aws_access_key": "{{env `AWS_ACCESS_KEY_ID`}}",
+    "aws_secret_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
+    "region": "us-east-1"
+  },
+  "builders": [
+    {
+      "type": "amazon-ebs",
+      "access_key": "{{user `aws_access_key`}}",
+      "secret_key": "{{user `aws_secret_key`}}",
+      "region": "{{user `region`}}",
+      "source_ami": "ami-0c55b159cbfafe1f0",
+      "instance_type": "t2.micro",
+      "ssh_username": "ubuntu",
+      "ami_name": "nginx-node-app-{{timestamp}}"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+        "sudo apt-get update",
+        "sudo apt-get install -y nginx nodejs npm",
+        "sudo npm install -g pm2",
+        "sudo mkdir -p /var/www/nodejs-app",
+        "sudo cp /tmp/nginx.conf /etc/nginx/sites-available/default",
+        "cd /var/www/nodejs-app && npm install"
+      ]
+    },
+    {
+      "type": "file",
+      "source": "./nginx/nginx.conf",
+      "destination": "/tmp/nginx.conf"
+    },
+    {
+      "type": "file",
+      "source": "./nodejs-app/",
+      "destination": "/var/www/nodejs-app"
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "pm2 start /var/www/nodejs-app/server.js",
+        "sudo systemctl restart nginx"
+      ]
+    }
+  ]
+}
