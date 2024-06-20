@@ -24,6 +24,7 @@
         "sudo apt-get install -y nginx nodejs npm",
         "sudo npm install -g pm2",
         "sudo mkdir -p /var/www/nodejs-app",
+        "sudo chown -R ubuntu:ubuntu /var/www/nodejs-app",
         "cd /var/www/nodejs-app && npm install"
       ]
     },
