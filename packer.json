@@ -24,7 +24,6 @@
         "sudo apt-get install -y nginx nodejs npm",
         "sudo npm install -g pm2",
         "sudo mkdir -p /var/www/nodejs-app",
-        "sudo cp /tmp/nginx.conf /etc/nginx/sites-available/default",
         "cd /var/www/nodejs-app && npm install"
       ]
     },
@@ -41,6 +40,7 @@
     {
       "type": "shell",
       "inline": [
+        "sudo cp /tmp/nginx.conf /etc/nginx/sites-available/default",
         "pm2 start /var/www/nodejs-app/server.js",
         "sudo systemctl restart nginx"
       ]
